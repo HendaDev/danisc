@@ -15,6 +15,14 @@ commitear y cian si está adelantada o atrasada respecto al remoto.
 
 Usuario y host solo salen cuando estoy por SSH o como root.
 
+Los colores son hex fijos en tonos medios, así se ven igual en temas claros y
+oscuros de la terminal.
+
+La versión de Flutter no se consulta con `flutter --version`, porque eso tarda
+cerca de un segundo en cada prompt. El tema la toma de la variable
+`FLUTTER_VERSION`, que se carga una vez al abrir la terminal (ver abajo). Sin
+esa variable se ve solo el icono.
+
 Necesita una Nerd Font en la terminal para los iconos.
 
 ## Instalarlo en Windows
@@ -45,6 +53,12 @@ créalo con `New-Item -Force $PROFILE`):
 oh-my-posh init pwsh --config "$env:USERPROFILE\.poshthemes\danisc.omp.json" | Invoke-Expression
 ```
 
+Si usas Flutter, agrega antes de esa línea la que lee la versión del SDK:
+
+```powershell
+try { $env:FLUTTER_VERSION = (Get-Content "$(Split-Path (Split-Path (Get-Command flutter).Source))\bin\cache\flutter.version.json" -Raw | ConvertFrom-Json).frameworkVersion } catch {}
+```
+
 Abre otra terminal y ya debería verse.
 
 ## Instalarlo en Linux
@@ -70,6 +84,12 @@ Y al final del `~/.bashrc`:
 
 ```bash
 eval "$(oh-my-posh init bash --config ~/.poshthemes/danisc.omp.json)"
+```
+
+Si usas Flutter, antes de esa línea:
+
+```bash
+export FLUTTER_VERSION=$(grep -o '"frameworkVersion": *"[^"]*"' "$(dirname "$(dirname "$(readlink -f "$(command -v flutter)")")")/bin/cache/flutter.version.json" 2>/dev/null | cut -d'"' -f4)
 ```
 
 Para verlo sin cerrar la terminal: `exec bash`.
